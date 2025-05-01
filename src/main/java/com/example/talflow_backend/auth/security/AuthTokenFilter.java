@@ -1,6 +1,6 @@
-package com.example.talflow_backend.security;
+package com.example.talflow_backend.auth.security;
 
-import com.example.talflow_backend.service.CustomUserDetailsService;
+import com.example.talflow_backend.auth.service.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

@@ -1,4 +1,4 @@
-package com.example.talflow_backend.security;
+package com.example.talflow_backend.auth.security;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

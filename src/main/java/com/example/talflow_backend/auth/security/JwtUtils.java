@@ -1,4 +1,4 @@
-package com.example.talflow_backend.security;
+package com.example.talflow_backend.auth.security;
 
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;

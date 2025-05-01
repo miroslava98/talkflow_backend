@@ -1,9 +1,9 @@
-package com.example.talflow_backend.controller;
+package com.example.talflow_backend.auth.controller;
 
 
 import com.example.talflow_backend.entity.User;
 import com.example.talflow_backend.repository.UserRepository;
-import com.example.talflow_backend.security.JwtUtils;
+import com.example.talflow_backend.auth.security.JwtUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -13,8 +13,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/talkflow/auth")

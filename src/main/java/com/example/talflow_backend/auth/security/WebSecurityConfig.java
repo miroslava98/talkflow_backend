@@ -1,6 +1,6 @@
-package com.example.talflow_backend.security;
+package com.example.talflow_backend.auth.security;
 
-import com.example.talflow_backend.service.CustomUserDetailsService;
+import com.example.talflow_backend.auth.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,6 +33,7 @@ public class WebSecurityConfig {
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/talkflow/auth/**").permitAll()
+                        .requestMatchers("/api/speech/**").permitAll()
                         .anyRequest().authenticated()
                 );
 

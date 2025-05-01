@@ -1,4 +1,4 @@
-package com.example.talflow_backend.service;
+package com.example.talflow_backend.auth.service;
 
 
 import com.example.talflow_backend.entity.User;
