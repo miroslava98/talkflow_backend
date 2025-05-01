@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/speech")
@@ -35,7 +36,7 @@ public class SpeechToTextController {
 
     @PostMapping("/transcribe")
     public ResponseEntity<SpeechRecognitionResponse> transcribeAudio(
-            @RequestParam("file") MultipartFile file) {
+            @RequestParam("file") MultipartFile file,  @RequestParam("language") Optional<String> language) {
         try {
             // Validación básica
             if (file.isEmpty()) {
@@ -48,7 +49,7 @@ public class SpeechToTextController {
             Files.copy(file.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
 
             // Procesar el archivo
-            SpeechRecognitionResponse response = speechToTextService.transcribeAudio(destination.toString());
+            SpeechRecognitionResponse response = speechToTextService.transcribeAudio(destination.toString(), language);
 
             // Eliminar el archivo temporal
             Files.deleteIfExists(destination);
@@ -67,7 +68,8 @@ public class SpeechToTextController {
 
     @GetMapping("/test")
     public ResponseEntity<SpeechRecognitionResponse> testTranscription() {
-        SpeechRecognitionResponse response = speechToTextService.transcribeAudio("harvard.wav");
+        Optional<String> language = Optional.of("en-EN");
+        SpeechRecognitionResponse response = speechToTextService.transcribeAudio("harvard.wav", language);
         return ResponseEntity.ok(response);
     }
 }

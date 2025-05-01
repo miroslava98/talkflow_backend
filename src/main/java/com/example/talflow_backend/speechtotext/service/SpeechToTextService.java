@@ -11,8 +11,13 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class SpeechToTextService {
@@ -25,7 +30,7 @@ public class SpeechToTextService {
         this.speechConfig = speechConfig;
     }
 
-    public SpeechRecognitionResponse transcribeAudio(String audioFilePath) {
+    public SpeechRecognitionResponse transcribeAudio(String audioFilePath, Optional<String> language) {
         try {
             File audioFile = new File(audioFilePath);
             // Validaciones adicionales
@@ -41,19 +46,50 @@ public class SpeechToTextService {
                         "Only WAV files are supported");
             }
 
-            try (AudioConfig audioConfig = AudioConfig.fromWavFileInput(audioFilePath); SpeechRecognizer recognizer = new SpeechRecognizer(speechConfig.speechConfig(), audioConfig)) {
-                Future<SpeechRecognitionResult> task = recognizer.recognizeOnceAsync();
-                SpeechRecognitionResult result = task.get();
+            SpeechConfig config = speechConfig.speechConfig();
+            if(language.isPresent()) {
+                config.setSpeechRecognitionLanguage(language.get());
+            }
+            // Configuración adicional para mejores resultados
+            config.setProperty(PropertyId.SpeechServiceConnection_InitialSilenceTimeoutMs, "10000");
+            config.setProperty(PropertyId.SpeechServiceConnection_EndSilenceTimeoutMs, "3000");
 
-                if (result.getReason() == ResultReason.RecognizedSpeech) {
-                    return new SpeechRecognitionResponse(
-                            result.getText(),
-                            "SUCCESS",
-                            null
-                    );
-                } else {
-                    return handleErrorResult(result);
-                }
+            List<String> transcribedParts = new ArrayList<>();
+            Semaphore recognitionEnd = new Semaphore(0);
+            try (AudioConfig audioConfig = AudioConfig.fromWavFileInput(audioFilePath);
+                 SpeechRecognizer recognizer = new SpeechRecognizer(config, audioConfig)) {
+
+                recognizer.recognized.addEventListener((s, e) -> {
+                    if (e.getResult().getReason() == ResultReason.RecognizedSpeech) {
+                        transcribedParts.add(e.getResult().getText());
+                    }
+                });
+
+                recognizer.canceled.addEventListener((s, e) -> {
+                    if (e.getReason() == CancellationReason.Error) {
+                        System.err.println("Error: " + e.getErrorDetails());
+                    }
+                    recognitionEnd.release();
+                });
+
+
+
+                recognizer.sessionStopped.addEventListener((s, e) -> {
+                    recognitionEnd.release();
+                });
+
+                // Iniciar reconocimiento continuo
+                recognizer.startContinuousRecognitionAsync().get();
+
+                // Esperar hasta que termine (máximo 10 minutos)
+                recognitionEnd.tryAcquire(10, TimeUnit.MINUTES);
+
+                // Detener el reconocimiento
+                recognizer.stopContinuousRecognitionAsync().get();
+
+                // Unir todas las partes reconocidas
+                String fullText = String.join(" ", transcribedParts);
+                return new SpeechRecognitionResponse(fullText, "SUCCESS", null);
 
             }
 
