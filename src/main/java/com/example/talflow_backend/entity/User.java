@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "email")})
@@ -31,16 +33,20 @@ public class User {
 
     private String avatar;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Transcripcion> transcripciones = new ArrayList<>();
+
     public User() {
     }
 
-    public User(Long id, String nombre, String email, String password, LocalDate fechaNacimiento, String avatar) {
+    public User(Long id, String nombre, String email, String password, LocalDate fechaNacimiento, String avatar, List<Transcripcion> transcripciones) {
         this.id = id;
         this.nombre = nombre;
         this.email = email;
         this.password = password;
         this.fechaNacimiento = fechaNacimiento;
         this.avatar = avatar;
+        this.transcripciones = new ArrayList<>();
     }
 
     public Long getId() {
@@ -91,4 +97,11 @@ public class User {
         this.avatar = avatar;
     }
 
+    public List<Transcripcion> getTranscripciones() {
+        return transcripciones;
+    }
+
+    public void setTranscripciones(List<Transcripcion> transcripciones) {
+        this.transcripciones = transcripciones;
+    }
 }

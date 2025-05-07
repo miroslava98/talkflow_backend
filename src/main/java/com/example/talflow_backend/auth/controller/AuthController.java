@@ -32,15 +32,15 @@ public class AuthController {
 
     // Login
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@RequestBody User user) {
-        if (!userRepository.existsByEmail(user.getEmail())) {
+    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
+        if (!userRepository.existsByEmail(loginRequest.getEmail())) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existe usuario con este correo");
         }
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            user.getEmail(),
-                            user.getPassword()
+                            loginRequest.getEmail(),
+                            loginRequest.getPassword()
                     )
             );
 
@@ -67,7 +67,8 @@ public class AuthController {
                 user.getEmail(),
                 passwordEncoder.encode(user.getPassword()),
                 user.getFechaNacimiento(),
-                user.getAvatar()
+                user.getAvatar(),
+                user.getTranscripciones()
         );
 
         userRepository.save(newUser);
@@ -111,7 +112,7 @@ public class AuthController {
             return token;
         }
 
-        public String getNombre(){
+        public String getNombre() {
             return nombre;
         }
     }

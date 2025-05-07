@@ -36,7 +36,7 @@ public class SpeechToTextController {
 
     @PostMapping("/transcribe")
     public ResponseEntity<SpeechRecognitionResponse> transcribeAudio(
-            @RequestParam("file") MultipartFile file,  @RequestParam("language") Optional<String> language) {
+            @RequestParam("file") MultipartFile file, @RequestParam("language") Optional<String> language, @RequestParam(value = "userId", required = false) Optional<String> userId) {
         try {
             // Validación básica
             if (file.isEmpty()) {
@@ -51,6 +51,7 @@ public class SpeechToTextController {
             // Procesar el archivo
             SpeechRecognitionResponse response = speechToTextService.transcribeAudio(destination.toString(), language);
 
+            userId.ifPresent(id -> speechToTextService.saveTranscriptionHistory(id, language.orElseGet(() -> "unknown"), response.getRecognizedText()));
             // Eliminar el archivo temporal
             Files.deleteIfExists(destination);
 
