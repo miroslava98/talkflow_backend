@@ -1,26 +1,21 @@
-package com.example.talflow_backend.speechtotext.service;
+package com.example.talflow_backend.STT_TTS.speechtotext.service;
 
 import com.example.talflow_backend.entity.Transcripcion;
 import com.example.talflow_backend.entity.User;
 import com.example.talflow_backend.repository.TranscripcionRepository;
 import com.example.talflow_backend.repository.UserRepository;
-import com.example.talflow_backend.speechtotext.config.AzureSpeechConfig;
-import com.example.talflow_backend.speechtotext.dto.SpeechRecognitionResponse;
+import com.example.talflow_backend.STT_TTS.speechtotext.dto.SpeechRecognitionResponse;
 import com.microsoft.cognitiveservices.speech.*;
 import com.microsoft.cognitiveservices.speech.audio.AudioConfig;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
@@ -28,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 public class SpeechToTextService {
 
 
-    private final AzureSpeechConfig speechConfig;
+    private final SpeechConfig speechConfig;
 
     @Autowired
     private UserRepository repoUser;
@@ -37,7 +32,7 @@ public class SpeechToTextService {
     private TranscripcionRepository repoTranscription;
 
     @Autowired
-    public SpeechToTextService(AzureSpeechConfig speechConfig) {
+    public SpeechToTextService(SpeechConfig speechConfig) {
         this.speechConfig = speechConfig;
     }
 
@@ -57,7 +52,7 @@ public class SpeechToTextService {
                         "Only WAV files are supported");
             }
 
-            SpeechConfig config = speechConfig.speechConfig();
+            SpeechConfig config = speechConfig;
             if (language.isPresent()) {
                 config.setSpeechRecognitionLanguage(language.get());
             }

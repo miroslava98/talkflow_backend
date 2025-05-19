@@ -1,8 +1,8 @@
-package com.example.talflow_backend.speechtotext.controller;
+package com.example.talflow_backend.STT_TTS.speechtotext.controller;
 
 
-import com.example.talflow_backend.speechtotext.dto.SpeechRecognitionResponse;
-import com.example.talflow_backend.speechtotext.service.SpeechToTextService;
+import com.example.talflow_backend.STT_TTS.speechtotext.dto.SpeechRecognitionResponse;
+import com.example.talflow_backend.STT_TTS.speechtotext.service.SpeechToTextService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

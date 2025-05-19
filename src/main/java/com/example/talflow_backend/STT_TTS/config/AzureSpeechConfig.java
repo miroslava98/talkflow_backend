@@ -1,4 +1,4 @@
-package com.example.talflow_backend.speechtotext.config;
+package com.example.talflow_backend.STT_TTS.config;
 
 import com.microsoft.cognitiveservices.speech.SpeechConfig;
 import io.github.cdimascio.dotenv.Dotenv;

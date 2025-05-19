@@ -2,8 +2,11 @@ package com.example.talflow_backend.auth.controller;
 
 
 import com.example.talflow_backend.entity.User;
+import com.example.talflow_backend.entity.VerificationToken;
 import com.example.talflow_backend.repository.UserRepository;
 import com.example.talflow_backend.auth.security.JwtUtils;
+import com.example.talflow_backend.repository.VerificationTokenRepository;
+import com.example.talflow_backend.service.ResendEmailService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -13,6 +16,10 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/talkflow/auth")
@@ -25,10 +32,16 @@ public class AuthController {
     private UserRepository userRepository;
 
     @Autowired
+    private VerificationTokenRepository verificationTokenRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
     private JwtUtils jwtUtil;
+
+    @Autowired
+    private ResendEmailService resendEmailService;
 
     // Login
     @PostMapping("/signin")
@@ -56,24 +69,31 @@ public class AuthController {
 
     // Registro
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@RequestBody @Valid User user) {
-        if (userRepository.existsByEmail(user.getEmail())) {
+    public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest) {
+        if (userRepository.existsByEmail(registerRequest.getEmail())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: El correo ya está en uso.");
         }
 
         User newUser = new User(
                 null,
-                user.getNombre(),
-                user.getEmail(),
-                passwordEncoder.encode(user.getPassword()),
-                user.getFechaNacimiento(),
-                user.getAvatar(),
-                user.getTranscripciones()
+                registerRequest.getNombre(),
+                registerRequest.getEmail(),
+                passwordEncoder.encode(registerRequest.getPassword()),
+                registerRequest.getFecha_nacimiento(),
+                registerRequest.getAvatar()
         );
+        newUser.setEnabled(false);
+
 
         userRepository.save(newUser);
 
-        return ResponseEntity.ok("Usuario registrado correctamente.");
+        String token = UUID.randomUUID().toString();
+        VerificationToken verificationToken = new VerificationToken(token, newUser, LocalDateTime.now().plusDays(1));
+        verificationTokenRepository.save(verificationToken);
+
+        resendEmailService.sendVerificationEmail(newUser.getEmail(), token);
+
+        return ResponseEntity.ok("Te hemos enviado un correo de verificación.");
     }
 
 
@@ -99,6 +119,54 @@ public class AuthController {
         }
     }
 
+    public static class RegisterRequest {
+        private String nombre;
+        private String email;
+        private LocalDate fecha_nacimiento;
+        private String password;
+        private String avatar;
+
+        public String getNombre() {
+            return nombre;
+        }
+
+        public void setNombre(String nombre) {
+            this.nombre = nombre;
+        }
+
+        public String getAvatar() {
+            return avatar;
+        }
+
+        public void setAvatar(String avatar) {
+            this.avatar = avatar;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+
+        public LocalDate getFecha_nacimiento() {
+            return fecha_nacimiento;
+        }
+
+        public void setFecha_nacimiento(LocalDate fecha_nacimiento) {
+            this.fecha_nacimiento = fecha_nacimiento;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+    }
+
     public static class JwtResponse {
         private String token;
         private String nombre;
@@ -117,3 +185,4 @@ public class AuthController {
         }
     }
 }
+

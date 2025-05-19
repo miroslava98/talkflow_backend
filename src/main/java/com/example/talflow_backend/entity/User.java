@@ -33,13 +33,17 @@ public class User {
 
     private String avatar;
 
+    //hasta que no se verifique el correo no hay cuenta
+    @Column
+    private boolean enabled = false;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Transcripcion> transcripciones = new ArrayList<>();
 
     public User() {
     }
 
-    public User(Long id, String nombre, String email, String password, LocalDate fechaNacimiento, String avatar, List<Transcripcion> transcripciones) {
+    public User(Long id, String nombre, String email, String password, LocalDate fechaNacimiento, String avatar) {
         this.id = id;
         this.nombre = nombre;
         this.email = email;
@@ -97,6 +101,14 @@ public class User {
         this.avatar = avatar;
     }
 
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
     public List<Transcripcion> getTranscripciones() {
         return transcripciones;
     }
@@ -104,4 +116,6 @@ public class User {
     public void setTranscripciones(List<Transcripcion> transcripciones) {
         this.transcripciones = transcripciones;
     }
+
+
 }

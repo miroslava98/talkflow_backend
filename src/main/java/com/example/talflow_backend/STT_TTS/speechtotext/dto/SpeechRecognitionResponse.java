@@ -1,4 +1,4 @@
-package com.example.talflow_backend.speechtotext.dto;
+package com.example.talflow_backend.STT_TTS.speechtotext.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
