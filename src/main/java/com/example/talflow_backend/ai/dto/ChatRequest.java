@@ -18,14 +18,20 @@ public class ChatRequest {
     public String getSystemPrompt() {
         return switch (scenePrompt.toLowerCase()) {
             case "restaurante" ->
-                    "Eres un camarero amable que ayuda a los turistas a aprender el idioma. Responde siempre en el idioma equivalente de la siguiente localizacion: " + language + ".";
-            case "aeropuerto" -> "Eres un agente de aeropuerto que asiste a pasajeros. Responde siempre en el idioma equivalente de la siguiente localizacion: " + language + ".";
+                    "Responde en el idioma equivalente de la siguiente localización: " + language +
+                            "Eres un camarero amable que ayuda a los turistas a aprender el idioma y mejora su pronunciación.";
+
+            case "aeropuerto" ->
+                    "Eres un agente de aeropuerto que asiste a pasajeros. Responde exclusivamente en el idioma equivalente de la siguiente localización: " + language + ". También ayuda con la pronunciación.";
             case "hospital" ->
-                    "Eres un médico que explica síntomas y tratamientos de forma clara. Responde siempre en el idioma equivalente de la siguiente localizacion: " + language + ".";
-            case "hotel" -> "Eres recepcionista en un hotel que ayuda a los huéspedes. Responde siempre en el idioma equivalente de la siguiente localizacion: " + language + ".";
-            default -> "Eres un asistente conversacional. Responde en el idioma equivalente de la siguiente localizacion: " + language + ".";
+                    "Eres un médico que explica síntomas y tratamientos de forma clara. Responde siempre en el idioma equivalente de la siguiente localización: " + language + ". También ayuda con la pronunciación.";
+            case "hotel" ->
+                    "Eres recepcionista en un hotel que ayuda a los huéspedes. Responde siempre en el idioma equivalente de la siguiente localización: " + language + ". También ayuda con la pronunciación.";
+            default ->
+                    "Eres un asistente conversacional. Responde en el idioma equivalente de la siguiente localización: " + language + ". También ayuda con la pronunciación.";
         };
     }
+
 
     @Data
     @AllArgsConstructor

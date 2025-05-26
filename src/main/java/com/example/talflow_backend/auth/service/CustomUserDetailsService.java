@@ -1,7 +1,7 @@
 package com.example.talflow_backend.auth.service;
 
 
-import com.example.talflow_backend.entity.User;
+import com.example.talflow_backend.ENTITIES.entity.User;
 import com.example.talflow_backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.*;

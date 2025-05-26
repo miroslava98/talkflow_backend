@@ -1,7 +1,7 @@
 package com.example.talflow_backend.auth.controller;
 
 
-import com.example.talflow_backend.entity.User;
+import com.example.talflow_backend.ENTITIES.entity.User;
 import com.example.talflow_backend.register_verification.entity.VerificationToken;
 import com.example.talflow_backend.register_verification.repository.VerificationTokenRepository;
 import com.example.talflow_backend.repository.UserRepository;

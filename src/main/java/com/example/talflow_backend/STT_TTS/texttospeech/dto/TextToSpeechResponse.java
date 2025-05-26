@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TextToSpeechResponse {
 
+    private String errorMessage;
     private String generatedText;
     private String audioBase64;
-    private String errorMessage;
 }

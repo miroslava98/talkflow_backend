@@ -34,12 +34,16 @@ public class OllamaController {
         try {
             String ollamaReply = ollamaService.enviarAlModelo(request);
 
+            String idioma = request.getLanguage();
 
-            //Generar audio en base64 con el texto recibido
-            TextToSpeechResponse ttsResponse = ttsService.textToAudio(ollamaReply, Optional.empty());
+            if (!idioma.isBlank()) {
 
-
-            return ResponseEntity.ok(new OllamaResponse(ollamaReply, ttsResponse.getAudioBase64()));
+                //Generar audio en base64 con el texto recibido
+                TextToSpeechResponse ttsResponse = ttsService.textToAudio(ollamaReply, idioma);
+                return ResponseEntity.ok(new OllamaResponse(ollamaReply, ttsResponse.getAudioBase64()));
+            }
+            // Si no hay idioma, solo devuelve el texto sin audio
+            return ResponseEntity.ok(new OllamaResponse(ollamaReply, null));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new OllamaResponse("ERROR: " + e.getMessage(), null));

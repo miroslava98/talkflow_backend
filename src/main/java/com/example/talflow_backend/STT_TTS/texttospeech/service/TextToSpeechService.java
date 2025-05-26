@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.Map;
 import java.util.Optional;
@@ -32,8 +34,8 @@ public class TextToSpeechService {
     );
 
 
-    public TextToSpeechResponse textToAudio(String generatedText, Optional<String> language) {
-        String fullLang = language.orElse("en"); // inglés por defecto
+    public TextToSpeechResponse textToAudio(String generatedText, String language) {
+        String fullLang = language;// inglés por defecto
         String langKey = fullLang.split("-")[0];
         try {
             String voice = VOICE_BY_LANGUAGE.getOrDefault(langKey, "en-US-JennyNeural");
@@ -51,6 +53,13 @@ public class TextToSpeechService {
 
                 if (audioData == null || audioData.length == 0) {
                     return new TextToSpeechResponse("Error: audio vacío", generatedText, null);
+                }
+
+            // Opcional: escribir archivo local para debug
+                try {
+                    Files.write(Paths.get("/tmp/testaudio.mp3"), audioData);
+                } catch (Exception fileEx) {
+                    System.err.println("No se pudo guardar el audio localmente: " + fileEx.getMessage());
                 }
 
                 String base64 = Base64.getEncoder().encodeToString(audioData);

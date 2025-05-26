@@ -1,7 +1,5 @@
 package com.example.talflow_backend.STT_TTS.speechtotext.service;
 
-import com.example.talflow_backend.entity.Transcripcion;
-import com.example.talflow_backend.entity.User;
 import com.example.talflow_backend.repository.TranscripcionRepository;
 import com.example.talflow_backend.repository.UserRepository;
 import com.example.talflow_backend.STT_TTS.speechtotext.dto.SpeechRecognitionResponse;
@@ -12,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -143,25 +140,6 @@ public class SpeechToTextService {
             );
         }
     }
-
-    public void saveTranscriptionHistory(String userId, String language, String recognizedText) {
-
-        try {
-            Long userID = Long.parseLong(userId);
-            Optional<User> optionalUsuario = repoUser.findById(userID);
-            if (optionalUsuario.isPresent()) {
-                User usuario = optionalUsuario.get();
-
-                Transcripcion t = new Transcripcion();
-                t.setUser(usuario);
-                t.setIdioma(language);
-                t.setTexto(recognizedText);
-                t.setFecha(LocalDateTime.now());
-
-                repoTranscription.save(t);
-            }
-        } catch (NumberFormatException e) {
-            System.err.println("Invalid user ID: " + userId);
-        }
-    }
 }
+
+

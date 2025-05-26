@@ -1,4 +1,4 @@
-package com.example.talflow_backend.entity;
+package com.example.talflow_backend.ENTITIES.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;

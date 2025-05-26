@@ -57,7 +57,6 @@ public class SpeechToTextController {
             // Procesar el archivo
             SpeechRecognitionResponse response = speechToTextService.transcribeAudio(destination.toString(), language);
 
-            userId.ifPresent(id -> speechToTextService.saveTranscriptionHistory(id, language.orElseGet(() -> "unknown"), response.getRecognizedText()));
 
 
             // Eliminar el archivo temporal

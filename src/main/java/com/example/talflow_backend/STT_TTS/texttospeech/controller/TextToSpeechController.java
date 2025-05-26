@@ -31,7 +31,7 @@ public class TextToSpeechController {
 
         TextToSpeechResponse response = ttsService.textToAudio(
                 request.getText(),
-                Optional.ofNullable(request.getLanguage())
+                request.getLanguage()
         );
 
         return ResponseEntity.ok(response);

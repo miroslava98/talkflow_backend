@@ -1,6 +1,6 @@
 package com.example.talflow_backend.register_verification.controller;
 
-import com.example.talflow_backend.entity.User;
+import com.example.talflow_backend.ENTITIES.entity.User;
 import com.example.talflow_backend.register_verification.entity.VerificationToken;
 import com.example.talflow_backend.register_verification.repository.VerificationTokenRepository;
 import com.example.talflow_backend.repository.UserRepository;
@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.net.http.HttpHeaders;
 import java.time.LocalDateTime;
 
 @RestController

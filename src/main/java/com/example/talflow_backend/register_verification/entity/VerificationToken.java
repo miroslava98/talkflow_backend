@@ -1,6 +1,6 @@
 package com.example.talflow_backend.register_verification.entity;
 
-import com.example.talflow_backend.entity.User;
+import com.example.talflow_backend.ENTITIES.entity.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
