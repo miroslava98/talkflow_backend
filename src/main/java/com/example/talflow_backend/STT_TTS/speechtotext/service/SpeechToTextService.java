@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,9 +48,9 @@ public class SpeechToTextService {
                 return new SpeechRecognitionResponse(null, "ERROR",
                         "Audio file is empty");
             }
-            if (!audioFilePath.toLowerCase().endsWith(".wav")) {
+            if (!audioFilePath.toLowerCase().endsWith(".mp4")) {
                 return new SpeechRecognitionResponse(null, "ERROR",
-                        "Only WAV files are supported");
+                        "Only MP4 files are supported");
             }
 
             SpeechConfig config = speechConfig;
@@ -62,7 +63,25 @@ public class SpeechToTextService {
 
             List<String> transcribedParts = new ArrayList<>();
             Semaphore recognitionEnd = new Semaphore(0);
-            try (AudioConfig audioConfig = AudioConfig.fromWavFileInput(audioFilePath);
+
+            String wavPath = audioFilePath.replace(".mp4", ".wav");
+            Process process = null;
+            try {
+                process = new ProcessBuilder(
+                        "C:\\ffmpeg-7.1.1-essentials_build\\bin\\ffmpeg.exe",
+                        "-y",
+                        "-i", audioFilePath,
+                        "-ac", "1",
+                        "-ar", "16000",
+                        "-af", "afftdn",
+                        wavPath
+                ).start();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            process.waitFor();
+
+            try (AudioConfig audioConfig = AudioConfig.fromWavFileInput(wavPath);
                  SpeechRecognizer recognizer = new SpeechRecognizer(config, audioConfig)) {
 
                 recognizer.recognized.addEventListener((s, e) -> {

@@ -1,4 +1,4 @@
-package com.example.talflow_backend.service;
+package com.example.talflow_backend.register_verification.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -20,6 +20,8 @@ public class ResendEmailService {
 
     private static final String API_URL = "https://api.resend.com/emails";
 
+
+    private static final String verifcationBaseUrl = "https://205b-62-42-180-254.ngrok-free.app";
     @Value("${resend.api.key}")
     private String API_KEY;
 
@@ -37,8 +39,8 @@ public class ResendEmailService {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(API_KEY);
         headers.setContentType(MediaType.APPLICATION_JSON);
-
-        String verificationUrl = "http://localhost:8080/auth/verify?token=" + token;
+        String pathApi = "/auth/verificationRegister/verify";
+        String verificationUrl = verifcationBaseUrl + pathApi+ "?token=" + token;
         String html = String.format(HTML_CONTENT, verificationUrl);
 
         Map<String, Object> body = new HashMap<>();
@@ -48,7 +50,6 @@ public class ResendEmailService {
         body.put("html", html);
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
-        restTemplate.postForEntity(API_URL, entity, String.class);
         try {
             ResponseEntity<String> response = restTemplate.postForEntity(API_URL, entity, String.class);
             System.out.println("Resend Response: " + response.getBody());

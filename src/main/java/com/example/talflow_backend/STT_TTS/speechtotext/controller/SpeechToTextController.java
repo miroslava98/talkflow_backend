@@ -3,6 +3,7 @@ package com.example.talflow_backend.STT_TTS.speechtotext.controller;
 
 import com.example.talflow_backend.STT_TTS.speechtotext.dto.SpeechRecognitionResponse;
 import com.example.talflow_backend.STT_TTS.speechtotext.service.SpeechToTextService;
+import com.example.talflow_backend.ai.service.OllamaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,11 +22,13 @@ public class SpeechToTextController {
 
     private final SpeechToTextService speechToTextService;
     private final Path uploadLocation;
+    private final OllamaService ollamaService;
 
     @Autowired
-    public SpeechToTextController(SpeechToTextService speechToTextService) {
+    public SpeechToTextController(SpeechToTextService speechToTextService, OllamaService ollamaService) {
         this.speechToTextService = speechToTextService;
         this.uploadLocation = Paths.get("uploads").toAbsolutePath().normalize();
+        this.ollamaService = ollamaService;
 
         try {
             Files.createDirectories(uploadLocation);
@@ -36,7 +39,10 @@ public class SpeechToTextController {
 
     @PostMapping("/transcribe")
     public ResponseEntity<SpeechRecognitionResponse> transcribeAudio(
-            @RequestParam("file") MultipartFile file, @RequestParam("language") Optional<String> language, @RequestParam(value = "userId", required = false) Optional<String> userId) {
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("language") Optional<String> language,
+            @RequestParam(value = "userId", required = false) Optional<String> userId,
+            @RequestParam("scene") Optional<String> scene) {
         try {
             // Validación básica
             if (file.isEmpty()) {
@@ -52,6 +58,8 @@ public class SpeechToTextController {
             SpeechRecognitionResponse response = speechToTextService.transcribeAudio(destination.toString(), language);
 
             userId.ifPresent(id -> speechToTextService.saveTranscriptionHistory(id, language.orElseGet(() -> "unknown"), response.getRecognizedText()));
+
+
             // Eliminar el archivo temporal
             Files.deleteIfExists(destination);
 

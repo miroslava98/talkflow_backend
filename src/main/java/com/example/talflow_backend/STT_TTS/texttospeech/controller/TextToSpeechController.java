@@ -21,7 +21,7 @@ public class TextToSpeechController {
         this.ttsService = ttsService;
     }
 
-    @PostMapping("/generate")
+    @PostMapping("/generateTTS")
     public ResponseEntity<TextToSpeechResponse> generateSpeech(@RequestBody TextToSpeechRequest request) {
         if (request.getText() == null || request.getText().isBlank()) {
             return ResponseEntity.badRequest().body(

@@ -34,7 +34,9 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/talkflow/auth/**").permitAll()
                         .requestMatchers("/api/speech/**").permitAll()
-                        .requestMatchers("api/tts/**").permitAll()
+                        .requestMatchers("/api/tts/**").permitAll()
+                        .requestMatchers("/api/chat/**", "/ping").permitAll()
+                        .requestMatchers("/auth/verificationRegister/**").permitAll()
                         .anyRequest().authenticated()
                 );
 
