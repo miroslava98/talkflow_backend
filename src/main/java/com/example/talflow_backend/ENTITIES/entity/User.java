@@ -27,10 +27,8 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
     @JsonProperty("fecha_nacimiento")
     private LocalDate fechaNacimiento;
-
     private String avatar;
 
     //hasta que no se verifique el correo no hay cuenta

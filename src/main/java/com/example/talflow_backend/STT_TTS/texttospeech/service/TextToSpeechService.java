@@ -14,6 +14,8 @@ import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class TextToSpeechService {
@@ -25,20 +27,37 @@ public class TextToSpeechService {
         this.speechConfig = speechConfig;
     }
 
+    private static final Map<String, String> LANGUAGE_TO_ISO_CODE = Map.of(
+            "español", "es",
+            "inglés", "en",
+            "francés", "fr",
+            "alemán", "de"
+    );
     private static final Map<String, String> VOICE_BY_LANGUAGE = Map.of(
             "es", "es-ES-ElviraNeural",
             "en", "en-US-JennyNeural",
             "fr", "fr-FR-DeniseNeural",
             "de", "de-DE-KatjaNeural"
-            // Agrega más si lo necesitas
     );
 
 
     public TextToSpeechResponse textToAudio(String generatedText, String language) {
-        String fullLang = language;// inglés por defecto
-        String langKey = fullLang.split("-")[0];
+        String isoCode = LANGUAGE_TO_ISO_CODE.getOrDefault(language.toLowerCase(), "english");
+        // Buscar frase entre comillas
+        Pattern pattern = Pattern.compile("\"([^\"]+)\"");
+        Matcher matcher = pattern.matcher(generatedText);
+
+        String phraseToRead = null;
+
+        if (matcher.find()) {
+            phraseToRead = matcher.group(1); // La primera frase entre comillas
+        } else {
+            // Fallback: usar la primera línea si no hay comillas
+            phraseToRead = generatedText.split("\\R")[0]; // \\R es salto de línea
+        }
+
         try {
-            String voice = VOICE_BY_LANGUAGE.getOrDefault(langKey, "en-US-JennyNeural");
+            String voice = VOICE_BY_LANGUAGE.getOrDefault(isoCode, "en-US-JennyNeural");
             speechConfig.setSpeechSynthesisVoiceName(voice);
             speechConfig.setSpeechSynthesisOutputFormat(SpeechSynthesisOutputFormat.Audio16Khz32KBitRateMonoMp3);
 
@@ -46,7 +65,7 @@ public class TextToSpeechService {
             SpeechSynthesizer synthesizer = new SpeechSynthesizer(speechConfig, null);
 
             // Ejecutar la síntesis
-            SpeechSynthesisResult result = synthesizer.SpeakText(generatedText);
+            SpeechSynthesisResult result = synthesizer.SpeakText(phraseToRead);
 
             if (result.getReason() == ResultReason.SynthesizingAudioCompleted) {
                 byte[] audioData = result.getAudioData();
@@ -55,7 +74,7 @@ public class TextToSpeechService {
                     return new TextToSpeechResponse("Error: audio vacío", generatedText, null);
                 }
 
-            // Opcional: escribir archivo local para debug
+                // Opcional: escribir archivo local para debug
                 try {
                     Files.write(Paths.get("/tmp/testaudio.mp3"), audioData);
                 } catch (Exception fileEx) {

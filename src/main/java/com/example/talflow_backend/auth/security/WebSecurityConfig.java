@@ -37,7 +37,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/api/tts/**").permitAll()
                         .requestMatchers("/api/chat/**", "/ping").permitAll()
                         .requestMatchers("/auth/verificationRegister/**").permitAll()
-                        .requestMatchers("api/transcriptions/**").permitAll()
+                        .requestMatchers("/api/transcriptions/**").permitAll()
                         .anyRequest().authenticated()
                 );
 

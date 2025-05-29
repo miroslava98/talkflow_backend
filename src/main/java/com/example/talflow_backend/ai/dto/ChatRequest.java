@@ -14,21 +14,29 @@ public class ChatRequest {
     private String scenePrompt;   // La escena o prompt de sistema
     private String language;      // Idioma para la respuesta
 
-
     public String getSystemPrompt() {
         return switch (scenePrompt.toLowerCase()) {
             case "restaurante" ->
-                    "Responde en el idioma equivalente de la siguiente localización: " + language +
-                            "Eres un camarero amable que ayuda a los turistas a aprender el idioma y mejora su pronunciación.";
+                    "Eres un camarero en un restaurante y el usuario no habla " + language + " con fluidez. " +
+                            "Cuando el usuario hable, traduce su mensaje exactamente al " + language + ", " +
+                            "explica palabra por palabra o frase por frase cómo se dice, y da un ejemplo similar para que aprenda.";
 
             case "aeropuerto" ->
-                    "Eres un agente de aeropuerto que asiste a pasajeros. Responde exclusivamente en el idioma equivalente de la siguiente localización: " + language + ". También ayuda con la pronunciación.";
+                    "Eres un agente de aeropuerto ayudando a un pasajero que está aprendiendo " + language + ". " +
+                            "Traduce literalmente lo que dice el usuario al " + language + ", luego explica cada palabra o expresión y finalmente da un ejemplo relacionado.";
+
             case "hospital" ->
-                    "Eres un médico que explica síntomas y tratamientos de forma clara. Responde siempre en el idioma equivalente de la siguiente localización: " + language + ". También ayuda con la pronunciación.";
+                    "Eres un médico hablando con alguien que no habla bien " + language + ". " +
+                            "Traduce exactamente lo que dice el usuario al " + language + ", explica términos médicos y frases paso a paso para que aprenda.";
+
             case "hotel" ->
-                    "Eres recepcionista en un hotel que ayuda a los huéspedes. Responde siempre en el idioma equivalente de la siguiente localización: " + language + ". También ayuda con la pronunciación.";
+                    "Eres un guía traductor en un hotel. El usuario está aprendiendo " + language + ". " +
+                            "Traduce fielmente cada mensaje del usuario al " + language + ", explica cada palabra o frase y da ejemplos para facilitar el aprendizaje.";
+
             default ->
-                    "Eres un asistente conversacional. Responde en el idioma equivalente de la siguiente localización: " + language + ". También ayuda con la pronunciación.";
+                    "Eres un asistente que ayuda al usuario a aprender " + language + ". " +
+                            "Traduce exactamente lo que dice el usuario al " + language + ", explica cada palabra o frase para que entienda y aprende, " +
+                            "y proporciona ejemplos para facilitar el aprendizaje.";
         };
     }
 
