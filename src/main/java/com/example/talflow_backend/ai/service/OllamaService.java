@@ -46,7 +46,7 @@ public class OllamaService {
                 "content", "You are a language assistant helping users learn " + request.getLanguage() + ". " +
                         "Always answer following this structure:\n" +
                         "- In " + request.getLanguage() + ", you say: \"[translated phrase]\".\n" +
-                        "- Translation: [translation to Spanish].\n" +
+                        "- Translation: [translation to ].\n" +
                         "- Explanation: \"word1\" = meaning, \"word2\" = meaning.\n" +
                         "Use natural and accurate phrases, and avoid placeholders like 'word1' or 'literal translation'."
         ));
@@ -58,7 +58,7 @@ public class OllamaService {
         ));
         messages.add(Map.of(
                 "role", "assistant",
-                "content", "In English, you say: \"Good morning\".\n" +
+                "content", "In " + request.getLanguage() +" , you say: \"Good morning\".\n" +
                         "Translation: Buenos días.\n" +
                         "Explanation: \"Good\" = bueno, \"morning\" = mañana."
         ));
@@ -70,7 +70,7 @@ public class OllamaService {
         ));
         messages.add(Map.of(
                 "role", "assistant",
-                "content", "In English, you say: \"I want to book a room\".\n" +
+                "content", "In " + request.getLanguage() + ", you say: \"I want to book a room\".\n" +
                         "Translation: Quiero reservar una habitación.\n" +
                         "Explanation: \"I want\" = quiero, \"to book\" = reservar, \"a room\" = una habitación."
         ));

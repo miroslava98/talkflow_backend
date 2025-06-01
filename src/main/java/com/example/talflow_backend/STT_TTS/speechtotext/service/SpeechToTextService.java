@@ -65,7 +65,7 @@ public class SpeechToTextService {
             Process process = null;
             try {
                 process = new ProcessBuilder(
-                        "C:\\ffmpeg-7.1.1-essentials_build\\bin\\ffmpeg.exe",
+                        "ffmpeg",
                         "-y",
                         "-i", audioFilePath,
                         "-ac", "1",
